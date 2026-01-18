@@ -401,6 +401,59 @@ You are a memory summarization system that records and preserves the complete in
 ```
 """
 
+SUMMARIZE_CONTEXT_PROMPT = """
+You are a conversation summarization assistant.
+Your goal is to compress the given conversation span into a concise summary that preserves all important information, intentions, decisions, and unresolved questions.
+The summary will later be used to replace the original conversation in the context, so make sure nothing essential is lost.
+
+Instructions:
+1. Read the provided conversation rounds carefully.
+2. Identify the main topics, actions, results, and open issues.
+3. Write a clear, factual summary in natural language.
+4. Do NOT include greetings, filler text, or redundant phrasing.
+
+Input:
+- Conversation content: {conversation_text}
+
+Output:
+- A concise yet comprehensive summary of the above conversation span.
+"""
+
+FILTER_CONTEXT_PROMPT = """
+You are a context filter assistant.
+Your goal is to identify and remove irrelevant or outdated content from the conversation context based on specific criteria to improve task-solving efficiency.
+
+Criteria for filtering: {criteria}
+
+Instructions:
+1. Read the provided conversation rounds.
+2. For each message, check if it matches the filtering criteria (i.e., if it should be removed).
+3. Return the list of messages that should be KEPT. Do not modify the content of the kept messages.
+
+Input:
+- Conversation content: {conversation_text}
+
+Output:
+- The filtered conversation content in JSON format: [{{"role": "...", "content": "..."}}, ...]
+"""
+
+REFLECTION_PROMPT = """
+You are an advanced AI assistant capable of deep reflection.
+Your task is to analyze the provided memories and generate high-level insights, patterns, or beliefs about the user or the situation.
+Do NOT just summarize the memories. Synthesize them into a higher-order concept.
+
+Examples:
+- Memories: "User ordered coffee", "User asked for espresso", "User dislikes tea"
+- Insight: "User is a coffee enthusiast who prefers strong flavors and avoids tea."
+
+Input:
+- Query/Topic: {query}
+- Retrieved Memories:
+{memories}
+
+Output:
+- The generated insight.
+"""
 
 def get_update_memory_messages(retrieved_old_memory_dict, response_content, custom_update_memory_prompt=None):
     if custom_update_memory_prompt is None:
