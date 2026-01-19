@@ -989,13 +989,14 @@ class Memory(MemoryBase):
 
         return original_memories
 
-    def update(self, memory_id, data):
+    def update(self, memory_id, data, metadata=None):
         """
         Update a memory by ID.
 
         Args:
             memory_id (str): ID of the memory to update.
             data (str): New content to update the memory with.
+            metadata (dict, optional): New metadata to update the memory with. Defaults to None.
 
         Returns:
             dict: Success message indicating the memory was updated.
@@ -1008,7 +1009,7 @@ class Memory(MemoryBase):
 
         existing_embeddings = {data: self.embedding_model.embed(data, "update")}
 
-        self._update_memory(memory_id, data, existing_embeddings)
+        self._update_memory(memory_id, data, existing_embeddings, metadata=metadata)
         return {"message": "Memory updated successfully!"}
 
     def delete(self, memory_id):
@@ -2047,13 +2048,14 @@ class AsyncMemory(MemoryBase):
 
         return original_memories
 
-    async def update(self, memory_id, data):
+    async def update(self, memory_id, data, metadata=None):
         """
         Update a memory by ID asynchronously.
 
         Args:
             memory_id (str): ID of the memory to update.
             data (str): New content to update the memory with.
+            metadata (dict, optional): New metadata to update the memory with. Defaults to None.
 
         Returns:
             dict: Success message indicating the memory was updated.
@@ -2067,7 +2069,7 @@ class AsyncMemory(MemoryBase):
         embeddings = await asyncio.to_thread(self.embedding_model.embed, data, "update")
         existing_embeddings = {data: embeddings}
 
-        await self._update_memory(memory_id, data, existing_embeddings)
+        await self._update_memory(memory_id, data, existing_embeddings, metadata=metadata)
         return {"message": "Memory updated successfully!"}
 
     async def delete(self, memory_id):
